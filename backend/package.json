@@ -1,0 +1,17 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "This is a video streaming platform",
+  "license": "ISC",
+  "author": "Vishwajeet Alugade",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "dotenv": "^18.0.6",
+    "nodemon": "^3.1.14",
+    "prettier": "^3.9.9"
+  }
+}
