@@ -23,11 +23,11 @@ const userSchema = new mongoose.Schema(
       required: true,
     },
     avtar: {
-      type: String, // Cloudnary uri
+      type: String, // Cloudinary uri
       required: true,
     },
     coverImage: {
-      type: String, // Cloudnary uri
+      type: String, // Cloudinary uri
     },
     password: {
       type: String,

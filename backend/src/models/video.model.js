@@ -3,11 +3,11 @@ import mongooseAggregatePagination from 'mongoose-aggregate-paginate-v2'
 
 const videoSchema = new mongoose.Schema({
     videoFile: {
-        type: String, // cloudnary uri
+        type: String, // cloudinary uri
         required: true
     },
     thumbnail: {
-        type: String, // cloudnary uri
+        type: String, // cloudinary uri
         required: true
     },
     owner: {
