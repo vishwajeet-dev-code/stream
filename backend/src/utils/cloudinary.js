@@ -1,5 +1,5 @@
 import { v2 as cloudinary } from 'cloudinary';
-import fs from 'fs'
+import fs from 'fs/promises'
 
 
 // CLOUDINARY CONFIGURATION
@@ -15,14 +15,15 @@ const uploadOnCloudinary = async function(localFilePath) {
         if(!localFilePath) return null
 
         const response = await cloudinary.uploader.upload(localFilePath, {
-            resource_type: auto
+            resource_type: "auto"
         })
 
         console.log("File uploaded successfully!! ", response.url);
+        await fs.unlink(localFilePath)
         return response
         
     } catch (error) {
-        fs.unlink(localFilePath) // REMOVE THE LOCALLY SAVED TEMP FILE AS UPLOAD OPRATION GOT FAILED
+        await fs.unlink(localFilePath) // REMOVE THE LOCALLY SAVED TEMP FILE AS UPLOAD OPRATION GOT FAILED
         return error
     }
     
