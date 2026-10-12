@@ -124,13 +124,7 @@ const userLogin = asyncHandler( async (req, res) => {
   }
 
   // check if user already register
-  const loginIdentifier = username.trim().toLowerCase()
-  const user = await User.findOne({
-    $or: [
-      { username: loginIdentifier },
-      { email: loginIdentifier },
-    ],
-  })
+  const user = await User.findOne({username})
   if(!user){
     throw new ApiError(404, "User does not exits")
   }
@@ -157,12 +151,11 @@ const userLogin = asyncHandler( async (req, res) => {
   .json(
     new ApiResponse(
       200,
-      "User login successfully",
       {
-        user: loogedUser,
-        accessToken,
-        refreshToken,
-      }
+      user: loogedUser,
+      accessToken, refreshToken
+      },
+      "User login Successfully"
     )
   )
 
