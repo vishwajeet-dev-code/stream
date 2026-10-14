@@ -20,6 +20,8 @@ services:
       - ./backend/.env
     environment:
       PORT: 8000
+      NODE_ENV: production
+      COOKIE_SECURE: "true"
       MONGODB_URI: mongodb://mongo:27017
       CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:8080,http://127.0.0.1:8080}
     ports:

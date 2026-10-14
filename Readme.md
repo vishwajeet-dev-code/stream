@@ -24,3 +24,11 @@ the API host port, update `API_BASE_URL` to match. `VITE_API_BASE_URL` remains
 supported as a fallback for existing deployments.
 
 To run the production Nginx frontend instead, use `docker compose up --build`.
+
+Authentication uses persistent, HttpOnly access and refresh cookies; token
+values are not stored by the frontend. The backend cookie lifetimes follow
+`ACCESS_TOKEN_EXPIRY` and `REFRESH_TOKEN_EXPIRY` in `backend/.env`. Local
+development uses `COOKIE_SAME_SITE=lax` over HTTP. Production Compose enables
+secure cookies; deployments with a cross-site frontend/API must use HTTPS,
+set `COOKIE_SAME_SITE=none`, and configure `CORS_ORIGIN` with the exact
+frontend origin(s).

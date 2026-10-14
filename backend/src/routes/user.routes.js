@@ -1,9 +1,18 @@
 import { Router } from "express";
-import { refreshAccessToken, userLogin, userLogout, userRegister } from "../controllers/user.controller.js";
+import {
+    getCurrentUser,
+    refreshAccessToken,
+    userLogin,
+    userLogout,
+    userRegister,
+} from "../controllers/user.controller.js";
 import {upload} from '../middleware/multer.middleware.js'
 import { verifyJWT } from "../middleware/auth.middleware.js";
+import { verifyAllowedOrigin } from "../middleware/origin.middleware.js";
 
 const router = Router()
+
+router.use(verifyAllowedOrigin)
 
 router.route("/register").post(
     upload.fields([
@@ -20,6 +29,7 @@ router.route("/register").post(
 )
 
 router.route("/login").post(userLogin)
+router.route("/current-user").get(verifyJWT, getCurrentUser)
 
 // SECURE ROUTES
 router.route("/logout").post(verifyJWT, userLogout)

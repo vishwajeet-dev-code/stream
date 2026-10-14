@@ -10,7 +10,9 @@ const allowedOrigins = (process.env.CORS_ORIGIN ?? '')
 
 
 app.use(cors({
-    origin: allowedOrigins.length > 0 ? allowedOrigins : true,
+    origin: (origin, callback) => {
+        callback(null, !origin || allowedOrigins.includes(origin))
+    },
     credentials: true
 }))
 
@@ -30,7 +32,24 @@ import userRouter from './routes/user.routes.js'
 // declare routes
 app.use("/api/v1/users", userRouter)
 
+app.use((error, req, res, next) => {
+    if (res.headersSent) {
+        return next(error)
+    }
 
+    const statusCode = Number.isInteger(error.statusCode)
+        ? error.statusCode
+        : 500
+    const message = statusCode < 500
+        ? error.message
+        : "Internal Server Error"
+
+    return res.status(statusCode).json({
+        success: false,
+        message,
+        errors: error.errors ?? [],
+    })
+})
 
 
 export default app

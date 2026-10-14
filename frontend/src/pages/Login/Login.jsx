@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { loginUser } from "../../api/auth/client";
+import { useLocation } from "react-router-dom";
+import { useAuth } from "../../auth/useAuth";
 import AnimatedBackground from "../Register/AnimatedBackground";
 import { ArrowLeft } from "lucide-react";
 
@@ -8,6 +9,8 @@ const Login = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
+  const { login } = useAuth();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -16,11 +19,17 @@ const Login = () => {
 
     try {
       const formData = new FormData(event.currentTarget);
-      const result = await loginUser({
+      await login({
         username: formData.get("username"),
         password: formData.get("password"),
       });
-      navigate("/home", { replace: true, state: { user: result.user } });
+      const destination = location.state?.from;
+      navigate(
+        destination?.pathname
+          ? `${destination.pathname}${destination.search || ""}${destination.hash || ""}`
+          : "/home",
+        { replace: true }
+      );
     } catch (requestError) {
       setError(requestError.message || "Unable to sign in. Please try again.");
     } finally {
