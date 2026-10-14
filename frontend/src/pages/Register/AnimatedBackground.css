@@ -1,0 +1,83 @@
+
+.animated-background {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 50% 45%, #111113 0%, #080809 65%, #030304 100%);
+  isolation: isolate;
+}
+
+.background-glow {
+  position: absolute;
+  inset: -20%;
+  background:
+    radial-gradient(ellipse at 15% 35%, rgba(255, 20, 45, 0.09), transparent 35%),
+    radial-gradient(ellipse at 85% 65%, rgba(255, 20, 45, 0.08), transparent 35%);
+  animation: glow-breathe 7s ease-in-out infinite alternate;
+}
+
+.wave-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  animation: wave-drift 12s ease-in-out infinite alternate;
+}
+
+.wave {
+  stroke-dasharray: 180 900;
+  stroke-dashoffset: 0;
+  animation: light-travel 9s linear infinite;
+}
+
+.wave-red {
+  opacity: 0.9;
+}
+
+.wave-white {
+  opacity: 0.65;
+  stroke-dasharray: 100 1000;
+  animation-duration: 13s;
+}
+
+.wave-1 { animation-delay: -2s; }
+.wave-2 { animation-delay: -4s; }
+.wave-3 { animation-delay: -6s; }
+.wave-4 { animation-delay: -3s; }
+.wave-5 { animation-delay: -7s; }
+
+.background-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 20%,
+    rgba(0, 0, 0, 0.25) 65%,
+    rgba(0, 0, 0, 0.65) 100%
+  );
+}
+
+@keyframes light-travel {
+  from { stroke-dashoffset: 1080; }
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes wave-drift {
+  from { transform: translateX(-1.5%) scale(1); }
+  to { transform: translateX(1.5%) scale(1.04); }
+}
+
+@keyframes glow-breathe {
+  from { opacity: 0.55; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wave,
+  .wave-svg,
+  .background-glow {
+    animation: none;
+  }
+}

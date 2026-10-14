@@ -1,6 +1,6 @@
 import backgroundImage from '../../../src/assets/images/landing-page-background.png'
 import './LandingPage.css'
-
+import {Link} from 'react-router-dom'
 const LandingPage = () => {
     return (
     <div
@@ -29,11 +29,11 @@ const LandingPage = () => {
             the content that moves you.
           </p>
 
-          <button 
+          <Link to="/get-started" 
           className="landing-text landing-cta mt-8 cursor-pointer rounded-sm bg-red-500 px-10 
           py-3 text-xl font-semibold hover:bg-red-600">
             Get Started
-          </button>
+          </Link>
         </main>
       </div>
     </div>

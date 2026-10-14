@@ -18,8 +18,9 @@ React file applies changes without restarting or rebuilding the container.
 The default CORS allowlist includes both localhost frontend URLs. Copy the root
 `.env.example` to `.env` to configure optional Compose values. For another
 deployment hostname, set `CORS_ORIGIN` to the exact comma-separated browser
-origins (including scheme and port), and set `VITE_API_BASE_URL` to the public
-API URL before building. If you change the API host port, also update
-`VITE_API_BASE_URL` to match.
+origins (including scheme and port), and set `API_BASE_URL` to the public users
+API endpoint (for example, `http://localhost:8000/api/v1/users`). If you change
+the API host port, update `API_BASE_URL` to match. `VITE_API_BASE_URL` remains
+supported as a fallback for existing deployments.
 
 To run the production Nginx frontend instead, use `docker compose up --build`.
