@@ -1,7 +1,7 @@
 import express from 'express'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
-
+import multer from 'multer'
 const app = express()
 const allowedOrigins = (process.env.CORS_ORIGIN ?? '')
     .split(',')
@@ -26,29 +26,35 @@ app.use(cookieParser())
 
 // import routes
 import userRouter from './routes/user.routes.js'
+import videoRouter from './routes/video.routes.js'
 
 
 
 // declare routes
 app.use("/api/v1/users", userRouter)
+app.use("/api/v1/video", videoRouter)
 
 app.use((error, req, res, next) => {
-    if (res.headersSent) {
-        return next(error)
-    }
+    if (error instanceof multer.MulterError) {
+  if (error.code === "LIMIT_UNEXPECTED_FILE") {
+    const message =
+      error.field === "videoFile"
+        ? "Please upload a valid video file in the videoFile field."
+        : "Please upload a valid image for the thumbnail.";
 
-    const statusCode = Number.isInteger(error.statusCode)
-        ? error.statusCode
-        : 500
-    const message = statusCode < 500
-        ? error.message
-        : "Internal Server Error"
+    return res.status(400).json({
+      success: false,
+      message,
+    });
+  }
 
-    return res.status(statusCode).json({
-        success: false,
-        message,
-        errors: error.errors ?? [],
-    })
+  if (error.code === "LIMIT_FILE_SIZE") {
+    return res.status(413).json({
+      success: false,
+      message: "File size exceeds the allowed limit.",
+    });
+  }
+}
 })
 
 
