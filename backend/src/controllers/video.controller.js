@@ -4,6 +4,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { Video } from "../models/video.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import mongoose from "mongoose";
 
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
@@ -95,8 +96,8 @@ const uploadVideo = asyncHandler(async (req, res) => {
   return res.status(201).json(
     new ApiResponse(
       201,
-      video,
-      "Video uploaded successfully"
+      "Video uploaded successfully",
+      video
     )
   );
 });
@@ -109,10 +110,30 @@ const getAllVideos = asyncHandler(async (req, res) => {
   return res.status(200).json(
     new ApiResponse(
       200,
-      videos,
-      "Videos fetched successfully"
+      "Videos fetched successfully",
+      videos
     )
   );
 });
 
+export const getVideoById = asyncHandler(async (req, res) => {
+  const { videoId } = req.params;
+
+  if (!mongoose.isValidObjectId(videoId)) {
+    throw new ApiError(400, "Invalid video ID");
+  }
+
+  const video = await Video.findOne({
+    _id: videoId,
+    isPublished: true,
+  }).populate("owner", "username avatar");
+
+  if (!video) {
+    throw new ApiError(404, "Video not found");
+  }
+
+  return res.status(200).json(
+    new ApiResponse(200, "Video fetched successfully", video)
+  );
+});
 export { uploadVideo, getAllVideos };

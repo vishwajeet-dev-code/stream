@@ -6,6 +6,7 @@ import LandingPage from "./pages/LandingPage/LandingPage";
 import RegisterUser from "./pages/Register/RegisterUser";
 import Login from "./pages/Login/Login";
 import Home from "./pages/Home/Home";
+import Watch from "./pages/Watch/Watch";
 
 function AuthLoading() {
   const { authError, refreshAuth, loading } = useAuth();
@@ -78,6 +79,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <Home />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/watch/:videoId"
+            element={
+              <ProtectedRoute>
+                <Watch />
               </ProtectedRoute>
             }
           />

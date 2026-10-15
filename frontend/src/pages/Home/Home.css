@@ -267,6 +267,208 @@
   color: #ffb4b4;
 }
 
+.upload-notice {
+  margin: 0 0 16px;
+  padding: 12px 16px;
+  border: 1px solid #286345;
+  border-radius: 8px;
+  background: #172a20;
+  color: #a7e7bf;
+}
+
+.upload-dialog-backdrop {
+  position: fixed;
+  z-index: 10;
+  inset: 0;
+  display: grid;
+  overflow-y: auto;
+  place-items: center;
+  padding: 20px;
+  background: rgb(0 0 0 / 70%);
+}
+
+.upload-dialog {
+  width: min(100%, 520px);
+  overflow: hidden;
+  border: 1px solid #383838;
+  border-radius: 14px;
+  background: #202020;
+  box-shadow: 0 18px 60px rgb(0 0 0 / 50%);
+}
+
+.upload-dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid #383838;
+}
+
+.upload-dialog-header h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.upload-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 20px;
+}
+
+.upload-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: #f1f1f1;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.upload-form input:not([type='file']),
+.upload-form textarea {
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid #555;
+  border-radius: 8px;
+  outline: none;
+  background: #121212;
+  color: #f1f1f1;
+  font: inherit;
+  font-weight: 400;
+}
+
+.upload-form input:focus,
+.upload-form textarea:focus {
+  border-color: #3ea6ff;
+}
+
+.upload-form input[type='file'] {
+  width: 100%;
+  color: #ccc;
+  font: inherit;
+  font-size: 13px;
+}
+
+.upload-form input[type='file']::file-selector-button {
+  margin-right: 10px;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 6px;
+  background: #383838;
+  color: #f1f1f1;
+  cursor: pointer;
+  font: inherit;
+}
+
+.upload-file-hint {
+  color: #aaa;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.upload-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.upload-progress-label {
+  display: flex;
+  justify-content: space-between;
+  color: #ddd;
+  font-size: 13px;
+}
+
+.upload-progress progress {
+  width: 100%;
+  height: 8px;
+  overflow: hidden;
+  appearance: none;
+  border: 0;
+  border-radius: 8px;
+  background: #414141;
+}
+
+.upload-progress progress::-webkit-progress-bar {
+  border-radius: 8px;
+  background: #414141;
+}
+
+.upload-progress progress::-webkit-progress-value {
+  border-radius: 8px;
+  background: #3ea6ff;
+  transition: width 120ms ease;
+}
+
+.upload-progress progress::-moz-progress-bar {
+  border-radius: 8px;
+  background: #3ea6ff;
+}
+
+.upload-progress progress.is-processing::-webkit-progress-value,
+.upload-progress progress.is-processing::-moz-progress-bar {
+  background: linear-gradient(90deg, #3ea6ff 0%, #a6d8ff 50%, #3ea6ff 100%);
+  background-size: 200% 100%;
+  animation: upload-processing 1.2s linear infinite;
+}
+
+@keyframes upload-processing {
+  from {
+    background-position: 100% 0;
+  }
+
+  to {
+    background-position: -100% 0;
+  }
+}
+
+.upload-form-error {
+  margin: 0;
+}
+
+.upload-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 4px;
+}
+
+.upload-cancel-button,
+.upload-submit-button {
+  padding: 9px 16px;
+  border: 0;
+  border-radius: 20px;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 600;
+}
+
+.upload-cancel-button {
+  background: transparent;
+  color: #f1f1f1;
+}
+
+.upload-cancel-button:hover {
+  background: #383838;
+}
+
+.upload-submit-button {
+  background: #f1f1f1;
+  color: #0f0f0f;
+}
+
+.upload-submit-button:hover:not(:disabled) {
+  background: #d9d9d9;
+}
+
+.upload-submit-button:disabled,
+.upload-cancel-button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
 .home-category-bar {
   position: sticky;
   z-index: 2;
@@ -305,13 +507,123 @@
 }
 
 .home-feed {
+  padding: 8px 0 40px;
+}
+
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  gap: 36px 18px;
+}
+
+.video-card {
+  min-width: 0;
+}
+
+.video-card-link {
+  min-width: 0;
+  color: inherit;
+  text-decoration: none;
+}
+
+.video-card-link:focus-visible {
+  border-radius: 12px;
+  outline: 2px solid #3ea6ff;
+  outline-offset: 4px;
+}
+
+.video-thumbnail {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  border-radius: 12px;
+  background: #272727;
+}
+
+.video-thumbnail img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 180ms ease;
+}
+
+.video-card:hover .video-thumbnail img {
+  transform: scale(1.03);
+}
+
+.video-duration {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  padding: 3px 5px;
+  border-radius: 4px;
+  background: rgb(0 0 0 / 80%);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.video-card-details {
   display: flex;
-  min-height: min(62vh, 560px);
+  align-items: flex-start;
+  gap: 12px;
+  padding-top: 12px;
+}
+
+.video-channel-avatar {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 50%;
+  background: #633b7a;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.video-card-copy {
+  min-width: 0;
+}
+
+.video-card-copy h2 {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 0 0 6px;
+  color: #f1f1f1;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.video-card-copy p {
+  overflow: hidden;
+  margin: 0;
+  color: #aaa;
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.home-feed-status,
+.home-feed-empty {
+  display: flex;
+  min-height: min(55vh, 480px);
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 40px 20px;
+  margin: 0;
+  color: #aaa;
   text-align: center;
+}
+
+.home-feed-empty {
+  padding: 40px 20px;
 }
 
 .home-feed-icon {
@@ -345,6 +657,22 @@
   color: #aaa;
   font-size: 14px;
   line-height: 1.6;
+}
+
+.home-retry-button {
+  margin-top: 16px;
+  padding: 9px 16px;
+  border: 0;
+  border-radius: 18px;
+  background: #f1f1f1;
+  color: #0f0f0f;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 600;
+}
+
+.home-retry-button:hover {
+  background: #d9d9d9;
 }
 
 .visually-hidden {

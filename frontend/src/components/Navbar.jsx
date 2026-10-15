@@ -8,7 +8,7 @@ import {
   Video,
 } from 'lucide-react'
 
-const Navbar = ({ user, onMenuClick, onLogout }) => {
+const Navbar = ({ user, onMenuClick, onLogout, onCreateClick }) => {
   const [search, setSearch] = useState('')
   const displayName = user?.fullName || user?.username || 'Your account'
   const avatarLabel = displayName.slice(0, 1).toUpperCase()
@@ -60,7 +60,7 @@ const Navbar = ({ user, onMenuClick, onLogout }) => {
       </form>
 
       <div className='navbar-actions'>
-        <button className='create-button' type='button'>
+        <button className='create-button' onClick={onCreateClick} type='button'>
           <Plus size={19} />
           <span>Create</span>
         </button>
