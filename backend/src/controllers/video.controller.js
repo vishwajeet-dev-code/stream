@@ -101,4 +101,18 @@ const uploadVideo = asyncHandler(async (req, res) => {
   );
 });
 
-export { uploadVideo };
+const getAllVideos = asyncHandler(async (req, res) => {
+  const videos = await Video.find({ isPublished: true })
+    .populate("owner", "username avatar")
+    .sort({ createdAt: -1 });
+
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      videos,
+      "Videos fetched successfully"
+    )
+  );
+});
+
+export { uploadVideo, getAllVideos };
