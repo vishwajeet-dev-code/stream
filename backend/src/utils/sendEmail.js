@@ -1,23 +1,15 @@
+import { Resend } from "resend";
 
-import { SMTPClient } from "emailjs";
-
-const client = new SMTPClient({
-  user: process.env.EMAIL_USER,
-  password: process.env.EMAIL_PASS,
-  host: "smtp.gmail.com",
-  port: 465,
-  ssl: true,
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const sendVerificationEmail = async (email, token) => {
-    const verificationUrl = new URL(
-      "/verify-email",
-      process.env.FRONTEND_URL
-    );
-    verificationUrl.searchParams.set("token", token);
+  const verificationUrl = new URL(
+    "/verify-email",
+    process.env.FRONTEND_URL
+  );
+  verificationUrl.searchParams.set("token", token);
 
-
-const html = `
+  const html = `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -79,16 +71,17 @@ const html = `
 </html>
 `;
 
+  const { data, error } = await resend.emails.send({
+    from: "Stream <onboarding@resend.dev>",
+    to: [email],
+    subject: "Verify your email address | Stream",
+    html,
+  });
 
-    return await client.sendAsync({
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: "Verify your email address",
-      attachment: [
-        {
-          data: html,
-          alternative: true,
-        },
-      ],
-    });
+  if (error) {
+    console.error("Verification email failed:", error);
+    throw new Error("Unable to send verification email");
+  }
+
+  return data;
 };
