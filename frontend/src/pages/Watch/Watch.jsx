@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import Navbar from '../../components/Navbar'
 import Sidebar from '../../components/Sidebar'
+import UploadVideoDialog from '../../components/UploadVideoDialog'
 import { useAuth } from '../../auth/useAuth'
 import { getVideo } from '../../api/video/client'
 import '../Home/Home.css'
@@ -18,6 +19,7 @@ const Watch = () => {
   const [loadedVideoId, setLoadedVideoId] = useState(null)
   const [sidebarExpanded, setSidebarExpanded] = useState(true)
   const [logoutError, setLogoutError] = useState('')
+  const [uploadDialogOpen, setUploadDialogOpen] = useState(false)
   const loading = loadedVideoId !== videoId
 
   useEffect(() => {
@@ -54,6 +56,7 @@ const Watch = () => {
         user={user}
         onMenuClick={() => setSidebarExpanded((expanded) => !expanded)}
         onLogout={handleLogout}
+        onCreateClick={() => setUploadDialogOpen(true)}
       />
       <div className='home-layout'>
         <Sidebar
@@ -92,6 +95,10 @@ const Watch = () => {
                 <div className='watch-channel-name'>
                   {video.owner?.username || 'Stream creator'}
                 </div>
+                <UploadVideoDialog
+                  onClose={() => setUploadDialogOpen(false)}
+                  open={uploadDialogOpen}
+                />
               </div>
               <section className='watch-description'>
                 <p className='watch-views'>{formatViews(video.views)}</p>

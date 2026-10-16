@@ -7,6 +7,7 @@ import {
   ListVideo,
   ThumbsUp,
   Video,
+  UserRound,
 } from 'lucide-react'
 
 const primaryLinks = [
@@ -20,6 +21,7 @@ const libraryLinks = [
   { label: 'History', icon: History },
   { label: 'Watch later', icon: Clock3 },
   { label: 'Liked videos', icon: ThumbsUp },
+  { label: 'Your channel', icon: UserRound },
 ]
 
 const Sidebar = ({ expanded, activeSection, onNavigate }) => {

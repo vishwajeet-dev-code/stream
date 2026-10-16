@@ -1,0 +1,77 @@
+.channel-main {
+  padding-top: 32px;
+}
+
+.channel-header {
+  margin-bottom: 28px;
+}
+
+.channel-header h1 {
+  margin: 0 0 8px;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.channel-header p,
+.channel-video-copy p,
+.channel-status p {
+  margin: 0;
+  color: #aaa;
+  font-size: 14px;
+}
+
+.channel-video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
+  gap: 28px 18px;
+}
+
+.channel-video-card {
+  overflow: hidden;
+  border-radius: 12px;
+  background: #181818;
+}
+
+.channel-video-card .video-thumbnail {
+  border-radius: 12px 12px 0 0;
+}
+
+.channel-video-copy {
+  padding: 12px;
+}
+
+.channel-video-copy h2 {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 0 0 8px;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.channel-video-copy p {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  line-height: 1.5;
+}
+
+.channel-status {
+  display: flex;
+  min-height: min(45vh, 360px);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  color: #aaa;
+  text-align: center;
+}
+
+.channel-status h2 {
+  margin: 0;
+  color: #f1f1f1;
+  font-size: 22px;
+  font-weight: 600;
+}

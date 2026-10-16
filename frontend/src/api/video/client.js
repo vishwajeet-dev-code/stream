@@ -26,6 +26,27 @@ export async function getVideos({ signal } = {}) {
   return result.data
 }
 
+export async function getMyVideos({ signal } = {}) {
+  const response = await fetch(`${VIDEOS_API_URL}/my-videos`, {
+    credentials: 'include',
+    signal,
+  })
+  const isJsonResponse = response.headers
+    .get('content-type')
+    ?.includes('application/json')
+  const result = isJsonResponse ? await response.json() : null
+
+  if (!response.ok || !result?.success) {
+    throw new Error(result?.message || 'Unable to load your videos. Please try again.')
+  }
+
+  if (!Array.isArray(result.data)) {
+    throw new Error('Your videos response was not in the expected format.')
+  }
+
+  return result.data
+}
+
 export async function getVideo(videoId, { signal } = {}) {
   const response = await fetch(
     `${VIDEOS_API_URL}/${encodeURIComponent(videoId)}`,

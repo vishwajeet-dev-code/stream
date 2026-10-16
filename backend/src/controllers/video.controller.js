@@ -102,6 +102,23 @@ const uploadVideo = asyncHandler(async (req, res) => {
   );
 });
 
+// FETCH CHANNEL OWNER VIDEOS
+const myVideos = asyncHandler(async (req, res) => {
+  
+  const user = req.user._id
+  
+  if(!user){
+    throw new ApiError(400, "User not found")
+  }
+
+  const video = await Video.find({
+    owner: user
+  }).sort({createdAt: -1})
+
+  return res.status(200)
+  .json(new ApiResponse(200, "Video fetched Successfully", video))
+})
+
 const getAllVideos = asyncHandler(async (req, res) => {
   const videos = await Video.find({ isPublished: true })
     .populate("owner", "username avatar")
@@ -136,4 +153,4 @@ export const getVideoById = asyncHandler(async (req, res) => {
     new ApiResponse(200, "Video fetched successfully", video)
   );
 });
-export { uploadVideo, getAllVideos };
+export { uploadVideo, getAllVideos, myVideos };

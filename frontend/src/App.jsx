@@ -8,6 +8,7 @@ import Login from "./pages/Login/Login";
 import Home from "./pages/Home/Home";
 import Watch from "./pages/Watch/Watch";
 import VerifyEmail from "./pages/VerifyEmail/VerifyEmail";
+import Channel from "./pages/Channel/Channel";
 
 function AuthLoading() {
   const { authError, refreshAuth, loading } = useAuth();
@@ -89,6 +90,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <Watch />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/channel"
+            element={
+              <ProtectedRoute>
+                <Channel />
               </ProtectedRoute>
             }
           />

@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
-import { X } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Navbar from '../../components/Navbar'
 import Sidebar from '../../components/Sidebar'
+import UploadVideoDialog from '../../components/UploadVideoDialog'
 import { useAuth } from '../../auth/useAuth'
-import { getVideos, uploadVideo } from '../../api/video/client'
+import { getVideos } from '../../api/video/client'
 import './Home.css'
 
 const formatDuration = (seconds) => {
@@ -21,14 +21,11 @@ const formatDuration = (seconds) => {
 
 const Home = () => {
   const { user, logout } = useAuth()
+  const navigate = useNavigate()
   const [error, setError] = useState('')
   const [videos, setVideos] = useState([])
   const [videosLoading, setVideosLoading] = useState(true)
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false)
-  const [uploading, setUploading] = useState(false)
-  const [uploadProgress, setUploadProgress] = useState(0)
-  const [uploadTransferComplete, setUploadTransferComplete] = useState(false)
-  const [uploadError, setUploadError] = useState('')
   const [uploadNotice, setUploadNotice] = useState('')
   const [sidebarExpanded, setSidebarExpanded] = useState(true)
   const [activeSection, setActiveSection] = useState('Home')
@@ -67,39 +64,17 @@ const Home = () => {
     }
   }
 
-  const handleUpload = async (event) => {
-    event.preventDefault()
-    setUploading(true)
-    setUploadProgress(0)
-    setUploadTransferComplete(false)
-    setUploadError('')
+  const handleUploadSuccess = async (uploadedVideo) => {
     setUploadNotice('')
+    setVideos((currentVideos) => [
+      uploadedVideo,
+      ...currentVideos.filter((video) => video._id !== uploadedVideo._id),
+    ])
 
-    const formData = new FormData(event.currentTarget)
     try {
-      const uploadedVideo = await uploadVideo(formData, (progress) => {
-        setUploadProgress(progress)
-        if (progress === 100) {
-          setUploadTransferComplete(true)
-        }
-      })
-      setVideos((currentVideos) => [
-        uploadedVideo,
-        ...currentVideos.filter((video) => video._id !== uploadedVideo._id),
-      ])
-      setUploadDialogOpen(false)
-
-      try {
-        setVideos(await getVideos())
-      } catch {
-        setUploadNotice('Video uploaded. The feed could not be refreshed.')
-      }
-    } catch (uploadRequestError) {
-      setUploadProgress(0)
-      setUploadTransferComplete(false)
-      setUploadError(uploadRequestError.message || 'Unable to upload video. Please try again.')
-    } finally {
-      setUploading(false)
+      setVideos(await getVideos())
+    } catch {
+      setUploadNotice('Video uploaded. The feed could not be refreshed.')
     }
   }
 
@@ -118,17 +93,20 @@ const Home = () => {
         user={user}
         onMenuClick={() => setSidebarExpanded((expanded) => !expanded)}
         onLogout={handleLogout}
-        onCreateClick={() => {
-          setUploadError('')
-          setUploadDialogOpen(true)
-        }}
+        onCreateClick={() => setUploadDialogOpen(true)}
       />
 
       <div className='home-layout'>
         <Sidebar
           expanded={sidebarExpanded}
           activeSection={activeSection}
-          onNavigate={setActiveSection}
+          onNavigate={(section) => {
+            if (section === 'Your channel') {
+              navigate('/channel')
+            } else {
+              setActiveSection(section)
+            }
+          }}
         />
 
         <main className='home-main'>
@@ -210,103 +188,11 @@ const Home = () => {
           </section>
         </main>
       </div>
-      {uploadDialogOpen && (
-        <div
-          className='upload-dialog-backdrop'
-          onMouseDown={(event) => {
-            if (event.target === event.currentTarget && !uploading) {
-              setUploadDialogOpen(false)
-            }
-          }}
-        >
-          <section
-            aria-labelledby='upload-dialog-title'
-            aria-modal='true'
-            className='upload-dialog'
-            role='dialog'
-          >
-            <div className='upload-dialog-header'>
-              <h2 id='upload-dialog-title'>Upload video</h2>
-              <button
-                aria-label='Close upload dialog'
-                className='icon-button'
-                disabled={uploading}
-                onClick={() => setUploadDialogOpen(false)}
-                type='button'
-              >
-                <X size={20} />
-              </button>
-            </div>
-            <form className='upload-form' onSubmit={handleUpload}>
-              <label>
-                Title
-                <input
-                  autoFocus
-                  maxLength={120}
-                  name='title'
-                  placeholder='Add a title'
-                  required
-                />
-              </label>
-              <label>
-                Description
-                <textarea
-                  maxLength={5000}
-                  name='description'
-                  placeholder='Tell viewers about your video'
-                  rows={3}
-                />
-              </label>
-              <label>
-                Video file
-                <input accept='video/*' name='videoFile' required type='file' />
-                <span className='upload-file-hint'>Video files up to 500 MB</span>
-              </label>
-              <label>
-                Thumbnail
-                <input accept='image/*' name='thumbnail' required type='file' />
-                <span className='upload-file-hint'>Image files up to 500 MB</span>
-              </label>
-              {uploading && (
-                <div aria-live='polite' className='upload-progress'>
-                  <div className='upload-progress-label'>
-                    <span>
-                      {uploadTransferComplete
-                        ? 'Files sent. Processing video...'
-                        : 'Uploading video...'}
-                    </span>
-                    {!uploadTransferComplete && <span>{uploadProgress}%</span>}
-                  </div>
-                  <progress
-                    aria-label={uploadTransferComplete ? 'Upload processing' : 'Upload progress'}
-                    className={uploadTransferComplete ? 'is-processing' : ''}
-                    max='100'
-                    value={uploadProgress}
-                  />
-                </div>
-              )}
-              {uploadError && (
-                <p className='home-error upload-form-error' role='alert'>
-                  {uploadError}
-                </p>
-              )}
-              <div className='upload-form-actions'>
-                <button
-                  className='upload-cancel-button'
-                  disabled={uploading}
-                  onClick={() => setUploadDialogOpen(false)}
-                  type='button'
-                >
-                  Cancel
-                </button>
-                <button className='upload-submit-button' disabled={uploading} type='submit'>
-                  {uploading ? 'Uploading...' : 'Upload'}
-                </button>
-              </div>
-            </form>
-          </section>
-        </div>
-      )}
+      <UploadVideoDialog
+        onClose={() => setUploadDialogOpen(false)}
+        onUploaded={handleUploadSuccess}
+        open={uploadDialogOpen}
+      />
     </div>
   )
 }
