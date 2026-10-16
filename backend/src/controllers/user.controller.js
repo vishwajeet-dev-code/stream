@@ -5,6 +5,8 @@ import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
+import { sendVerificationEmail } from "../utils/sendEmail.js";
+import crypto from "node:crypto";
 
 const getCookieOptions = (token) => {
   const decodedToken = jwt.decode(token);
@@ -70,9 +72,21 @@ const generateAccessAndRefreshToken = async (user) => {
   };
 };
 
+const deliverVerificationEmail = async (email, token) => {
+  try {
+    await sendVerificationEmail(email, token);
+  } catch (error) {
+    console.error("Failed to send verification email:", error);
+    throw new ApiError(
+      503,
+      "The account was saved, but the verification email could not be sent. Retry registration with the same username, email, and password."
+    );
+  }
+};
+
 const userRegister = asyncHandler(async (req, res) => {
   // GET USER DATA FROM REQUEST
-  const { username, email, fullName, password } = req.body;
+  const { username, email, fullName, password } = req.body || {};
 
   // PERFORM VALIDATION ON RECEIVED DATA
   if (
@@ -83,15 +97,41 @@ const userRegister = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Some fields are missing");
   }
 
+  const normalizedUsername = username.trim().toLowerCase();
+  const normalizedEmail = email.trim().toLowerCase();
+
   // CHECK IF USER ALREADY EXISTS
   const userExisted = await User.findOne({
     $or: [
-      { username: username.trim().toLowerCase() },
-      { email: email.trim().toLowerCase() },
+      { username: normalizedUsername },
+      { email: normalizedEmail },
     ],
   });
 
   if (userExisted) {
+    const canResendVerification =
+      !userExisted.isEmailVerified &&
+      userExisted.username === normalizedUsername &&
+      userExisted.email === normalizedEmail &&
+      (await userExisted.isPasswordCorrect(password));
+
+    if (canResendVerification) {
+      const rawToken = crypto.randomBytes(32).toString("hex");
+      userExisted.emailVerificationToken = crypto
+        .createHash("sha256")
+        .update(rawToken)
+        .digest("hex");
+      userExisted.emailVerificationExpiry = Date.now() + 15 * 60 * 1000;
+      await userExisted.save({ validateBeforeSave: false });
+      await deliverVerificationEmail(normalizedEmail, rawToken);
+
+      return res.status(200).json(
+        new ApiResponse(200, "Verification email sent", {
+          email: normalizedEmail,
+        })
+      );
+    }
+
     throw new ApiError(409, "Username or email already exists");
   }
 
@@ -130,15 +170,24 @@ const userRegister = asyncHandler(async (req, res) => {
     coverImage = coverImageUpload.url;
   }
 
+  // VERIFY EMAIL
+  const rawToken = crypto.randomBytes(32).toString("hex")
+  const hashedToken = crypto.createHash("sha256").update(rawToken).digest("hex");
+
   // CREATE USER
   const user = await User.create({
-    username: username.trim().toLowerCase(),
-    email: email.trim().toLowerCase(),
+    username: normalizedUsername,
+    email: normalizedEmail,
     fullName: fullName.trim(),
     password,
     avatar: avatarImage,
     coverImage,
+    isEmailVerified: false,
+    emailVerificationToken: hashedToken,
+    emailVerificationExpiry: Date.now() + 15 * 60 * 1000,
   });
+
+  await deliverVerificationEmail(normalizedEmail, rawToken);
 
   // EXCLUDE SENSITIVE FIELDS
   const createdUser = await User.findById(user._id).select(
@@ -159,7 +208,7 @@ const userRegister = asyncHandler(async (req, res) => {
 });
 
 const userLogin = asyncHandler(async (req, res) => {
-  const { username, password } = req.body;
+  const { username, password } = req.body || {};
 
   if (
     typeof username !== "string" ||

@@ -20,13 +20,17 @@ export default function RegisterUser() {
 
     try {
       const formData = new FormData(event.currentTarget);
-      await registerUser({
+      const result = await registerUser({
         fullName: formData.get("fullName"),
         username: formData.get("username"),
         email: formData.get("email"),
         password: formData.get("password"),
       });
-      setSuccess("Your account has been created successfully.");
+      setSuccess(
+        result?.email
+          ? "A verification email has been sent. Check your inbox."
+          : "Your account has been created. Check your inbox for the verification email."
+      );
     } catch (error) {
       setError(error.message || "Unable to create your account.");
     } finally {

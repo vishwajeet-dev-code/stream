@@ -11,21 +11,16 @@ cloudinary.config({
 
 // FILE UPLOAD ON CLOUDINARY
 const uploadOnCloudinary = async function(localFilePath) {
-    try {
-        if(!localFilePath) return null
+    if(!localFilePath) return null
 
-        const response = await cloudinary.uploader.upload(localFilePath, {
+    try {
+        return await cloudinary.uploader.upload(localFilePath, {
             resource_type: "auto"
         })
-
-        console.log("File uploaded successfully!! ", response.url);
-        await fs.unlink(localFilePath)
-        return response
-        
-    } catch (error) {
-        await fs.unlink(localFilePath) // REMOVE THE LOCALLY SAVED TEMP FILE AS UPLOAD OPRATION GOT FAILED
-        return error
+    } finally {
+        await fs.unlink(localFilePath).catch((error) => {
+            if (error.code !== "ENOENT") throw error;
+        });
     }
-    
 }
 export { uploadOnCloudinary }

@@ -42,6 +42,18 @@ const userSchema = new mongoose.Schema(
         ref: "Video",
       },
     ],
+    isEmailVerified: {
+      type: Boolean,
+      default: false
+    },
+
+    emailVerificationToken: {
+      type: String
+    },
+    emailVerificationExpiry: {
+      type: Date
+    }
+
   },
   { timestamps: true }
 );

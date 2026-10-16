@@ -7,6 +7,7 @@ import RegisterUser from "./pages/Register/RegisterUser";
 import Login from "./pages/Login/Login";
 import Home from "./pages/Home/Home";
 import Watch from "./pages/Watch/Watch";
+import VerifyEmail from "./pages/VerifyEmail/VerifyEmail";
 
 function AuthLoading() {
   const { authError, refreshAuth, loading } = useAuth();
@@ -74,6 +75,7 @@ function App() {
               </GuestRoute>
             }
           />
+          <Route path="/verify-email" element={<VerifyEmail />} />
           <Route
             path="/home"
             element={

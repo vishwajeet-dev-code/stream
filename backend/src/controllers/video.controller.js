@@ -40,7 +40,7 @@ const uploadVideo = asyncHandler(async (req, res) => {
     throw new ApiError(401, "User is not authenticated");
   }
 
-  if (!title?.trim()) {
+  if (typeof title !== "string" || !title.trim()) {
     throw new ApiError(400, "Title is required");
   }
 

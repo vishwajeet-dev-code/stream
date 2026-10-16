@@ -74,6 +74,10 @@ export function registerUser(userData) {
   return request("register", { method: "POST", body: userData });
 }
 
+export function verifyEmail(token) {
+  return request(`verify-email?token=${encodeURIComponent(token)}`);
+}
+
 export function loginUser(userData) {
   return request("login", { method: "POST", body: userData });
 }
