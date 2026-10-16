@@ -1,12 +1,22 @@
 import nodemailer from 'nodemailer'
 
+// Source - https://stackoverflow.com/a/79412835
+// Posted by Ssekabira Robert Sims, modified by community. See post 'Timeline' for change history
+// Retrieved 2026-10-16, License - CC BY-SA 4.0
+
 const transporter = nodemailer.createTransport({
-    service: process.env.EMAIL_SERVICE || "gmail",
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-    }
-})
+   port: 465,
+   host: "smtp.gmail.com",
+   auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+   },
+   secure: true,
+   tls: {
+      rejectUnauthorized: false
+   }
+});
+
 
 export const sendVerificationEmail = async (email, token) => {
     if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS || !process.env.FRONTEND_URL) {
