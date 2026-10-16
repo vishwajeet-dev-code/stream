@@ -1,6 +1,5 @@
 
 import { SMTPClient } from "emailjs";
-import { asyncHandler } from "./asyncHandler.js";
 
 const client = new SMTPClient({
   user: process.env.EMAIL_USER,
@@ -10,8 +9,7 @@ const client = new SMTPClient({
   ssl: true,
 });
 
-export const sendVerificationEmail = asyncHandler(
-  async (email, token) => {
+export const sendVerificationEmail = async (email, token) => {
     const verificationUrl = new URL(
       "/verify-email",
       process.env.FRONTEND_URL
@@ -93,5 +91,4 @@ const html = `
         },
       ],
     });
-  }
-);
+};
