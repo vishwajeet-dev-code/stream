@@ -82,6 +82,14 @@ export function loginUser(userData) {
   return request("login", { method: "POST", body: userData });
 }
 
+export function forgotPassword(email) {
+  return request("forgot-password", { method: "POST", body: { email } });
+}
+
+export function resetPassword(passwordData) {
+  return request("reset-password", { method: "POST", body: passwordData });
+}
+
 export function getCurrentUser() {
   return request("current-user", { authenticated: true });
 }

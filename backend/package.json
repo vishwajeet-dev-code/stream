@@ -23,6 +23,7 @@
     "emailjs": "^5.0.3",
     "express": "^5.2.1",
     "fs": "^0.0.1-security",
+    "ioredis": "^6.0.0",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.11.1",
     "mongoose-aggregate-paginate-v2": "^1.1.5",

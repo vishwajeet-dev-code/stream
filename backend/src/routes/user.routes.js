@@ -1,7 +1,9 @@
 import { Router } from "express";
 import {
+    forgotPassword,
     getCurrentUser,
     refreshAccessToken,
+    resetPassword,
     userLogin,
     userLogout,
     userRegister,
@@ -35,6 +37,8 @@ router.route("/current-user").get(verifyJWT, getCurrentUser)
 // SECURE ROUTES
 router.route("/logout").post(verifyJWT, userLogout)
 router.route("/refresh-token").post(refreshAccessToken)
+router.route("/forgot-password").post(forgotPassword)
+router.route("/reset-password").post(resetPassword)
 
 // EMAIL VERIFY
 router.get("/verify-email", verifyEmail)

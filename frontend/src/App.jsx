@@ -9,6 +9,8 @@ import Home from "./pages/Home/Home";
 import Watch from "./pages/Watch/Watch";
 import VerifyEmail from "./pages/VerifyEmail/VerifyEmail";
 import Channel from "./pages/Channel/Channel";
+import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword/ResetPassword";
 
 function AuthLoading() {
   const { authError, refreshAuth, loading } = useAuth();
@@ -73,6 +75,22 @@ function App() {
             element={
               <GuestRoute>
                 <Login />
+              </GuestRoute>
+            }
+          />
+          <Route
+            path="/forgot-password"
+            element={
+              <GuestRoute>
+                <ForgotPassword />
+              </GuestRoute>
+            }
+          />
+          <Route
+            path="/reset-password"
+            element={
+              <GuestRoute>
+                <ResetPassword />
               </GuestRoute>
             }
           />
